@@ -14,6 +14,7 @@ module.exports = {
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
+    "no-empty": 0,
     "vue/max-attributes-per-line": [2, {
       "singleline": 10,
       "multiline": {
@@ -193,6 +194,7 @@ module.exports = {
     'object-curly-spacing': [2, 'always', {
       objectsInObjects: false
     }],
-    'array-bracket-spacing': [2, 'never']
+    'array-bracket-spacing': [2, 'never'],
+    "no-trailing-spaces": 0
   }
 }

@@ -14,15 +14,25 @@
           <img src="@/assets/common/login-logo.png" alt="">
         </h3>
       </div>
-      <el-form-item prop="username">
+      <!--
+        表单校验的三个步骤;
+        1．定义规则
+        2.应用规则(三要素)
+        a. el-form的modelb. el-form的 rules
+        c. el-form-item 的 prop
+        3．兜底校验
+      -->
+
+      <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
+        <!--  prop 一定是得与 接口文档一样的 -->
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="mobile"
+          v-model="loginForm.mobile"
+          placeholder="请输入手机号"
+          name="mobile"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -38,7 +48,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="请输入密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -57,6 +67,10 @@
         @click.native.prevent="handleLogin"
       >登录</el-button>
 
+      <!-- 即先点击 登录 token 存入 vuex, 再次点击测试-->
+      <!-- 测试 获取到 token 没 -->
+      <el-button @click="getUserProfile">获取用户信息</el-button>
+
       <div class="tips">
         <span style="margin-right:20px;">账号: 13800000002</span>
         <span> 密码: 123456</span>
@@ -65,35 +79,47 @@
     </el-form>
   </div>
 </template>
-
+ 
 <script>
-import { validUsername } from '@/utils/validate'
+// 按需导入
+// 封装用户手机号
+import { validMobile } from '@/utils/validate'
+
+// 封装到 store 的 user 中了，此处只需调用即可
+import { getProfile } from '@/api/user'
+
+// import { login } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+    // 1.validator 自定义校验
+    const validateMobile = (rule, value, callback) => {
+      // rule：采用的规则
+      // value: 被校验的值
+      // callback是回调函数
+      // 使用这个封装起来的  validMobile 复用性高
+      // pattern:定义正则,真正项目开发时其实用的比较少，因为复用性不高
+      if (!validMobile(value)) {
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        mobile: '13800000002',
+        password: '123456'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        mobile: [
+          { required: true, trigger: 'blur', message: '手机号不能为空' },
+          { trigger: 'blur', validator: validateMobile }
+        ],
+        password: [
+          { required: true, trigger: 'blur', message: '密码不能为空' },
+          { min: 6, max: 16, message: '密码的长度在6-16位之间', trigger: 'blur' }
+        ]
       },
       loading: false,
       passwordType: 'password',
@@ -119,19 +145,64 @@ export default {
         this.$refs.password.focus()
       })
     },
+    // 测试 token 添加成功没
+    async getUserProfile() {
+      console.log('获取用户信息')
+      const res = await getProfile()
+      console.log(res)
+    },
+    // 兜底校验
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+          // login 得到的结果就是一个对象
+          // 所谓的 login 就是把 this.$http() 这个代码封装到 login 函数中了（大大维护了代码的可维护性）
+          // const res = await login(this.loginForm)
+          // console.log(res)
+
+          // 原本语法:我们使用这个也可以  login(this.loginForm).then().catch(),但用了 async/await 之后就得用 try..catch
+
+          // 也可以使用 fetch,但是都使用 axios 了
+
+          // 1. 目的，出现超时时提醒用户
+          // try 代码块包裹 [可能] 会出错的代码（未知）
+          // 因为发网络请求可能正确，也有可能错误
+          // 使用 try...catch, 不管正确还是错误都会有结果
+          // 这里就是捕获和不捕获的区别
+          // 1-1 但是会有一个问题 （try..catch 是根据 axios 的响应状态来判断的）
+          // --》比如发送请求时后台返回的 status 是 200，这是 执行的是 try ,但用户密码是错误的，
+          // --》这就是响应的状态码是正确的，但响应结果是错误的,该咋办呢, 因为这种情况是不会进 catch 的
+          
+          // 改造前:在组件内发请求,调用 mutations 操作state
+
+          // try { // 没出错时捕获
+          //   // 假如这行代码出错了，那下面那些代码就不会执行了，就直接跳转到 catch 处理
+          //   const res = await login(this.loginForm)
+          //   // console.log(res)
+          //   // 1-3 调用 mutations 将 token 存入 vuex 中
+          //   // --》直接写就行，因为 this 获取的是 $store
+          //   // --》this 只能在组件中使用，不可在 js 文件中使用，这就是原因
+          //   this.$store.commit('user/updataToken', res.data)
+          //   // 1-2. 如果没有拦截器, 还需要在此处判断 success
+          //   // if (re.code !== 0)  // 大事件
+          //   // if(! res.success) // 人资
+          //   // --》在有了拦截器之后，所有的请求响应的这些判断都交给拦截器来管理，提高了我们
+          //   // --》写代码的效率，与解决了代码的一些冗余
+          // } catch (event) { // 出错时捕获
+          //   // 还有 catch 一定要做提示的，不然出错时，不会提示
+          //   // console.log(event)
+          //   // console.dir(event)
+          //   this.$message.error(event.message)
+          // }
+
+          // 改造后:在 actions发请求，组件内只需要调用 actions 即可
+
+          // 1. 如果需要捕获到异常，要在 dispatch 前加 await 等待请求完成
+          try {
+            await this.$store.dispatch('user/postLogin', this.loginForm)
+          } catch (event) {
+            this.$message.error(event.message)
+          }
         }
       })
     }

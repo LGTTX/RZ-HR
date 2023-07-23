@@ -8,8 +8,12 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 // style 的入口文件
 import '@/styles/index.scss' // global css
 
+// api 文件使用用来给其它 组件调用的
+
 import App from './App'
+// 放了所有的状态 js 文件
 import store from './store'
+// router 中放置了所有的页面组件
 import router from './router'
 
 import '@/icons' // icon
@@ -35,10 +39,15 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+ 
 new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App)
 })
+
+// 测试访问环境变量
+// 这个环境变量是 node 提供, 所以修改完环境变量后一定要重启服务器
+// console.log(process.env.VUE_APP_NAME)
+// console.log(process.env.VUE_APP_BASE_API)

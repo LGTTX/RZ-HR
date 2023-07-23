@@ -35,6 +35,14 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      // 如果请求地址以/api打头(就是 http://localhost:9528/api 开头),就出触发代理机制
+      // http://localhost:9588/api/sys/login => http://localhost:3000/api/login
+      '/api': {
+        target: 'http://localhost:3000' // 目标服务器地址。我们要代理的真实接口地址
+        // target: 'http://ihrm.itheima.net'
+      }
     }
     // 在项目中开启 mock-serve 实现 数据模拟
     // before: require('./mock/mock-server.js')

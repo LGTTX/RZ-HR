@@ -1,8 +1,51 @@
-export default {
+import { setToken, getToken, removeToken } from '@/utils/auth'
+import { login } from '@/api/user'
+// Element 为 Vue.prototype 添加了全局方法 $message。
+// 也可 导入 Vue 也可
+// import { Message } from 'element-ui'
+// import Vue from 'vue'
+export default { 
   namespaced: true,
-  state: {},
-  mutations: {},
-  actions: {}
+  // namespaced: true,
+  state: {
+    // 1. 如果拿到 token 就 getToken, 没拿到 token 则 ''
+    // 首次加载在 cookie 中取值
+    // token 是从本地来的,本地没有就为 ''
+    token: getToken() || ''
+    // token: ''
+  },
+  mutations: {
+    // 1.定义 mutations 来操作 token
+    updataToken(state, token) {
+      state.token = token
+
+      // 1-1.存到本地 cookie 中
+      setToken(token)
+    },
+    // 2.删除 token
+    removeToken(state) {
+      state.token = ''
+      // 2-1.删除 cookie 中的
+      removeToken()
+    }
+  },
+  actions: {
+    async postLogin(context, loginForm) {
+    // 1.在 user 中是不会有 this.loginForm 的
+    // const res = await login(this.loginForm) 
+    // 1-1.采用传参方式
+    // 1-2 一般捕获 try..catch 还是放到组件中吧，虽然放在这也行
+      // try {
+      const res = await login(loginForm) 
+      // 2.contenx.commit('user/updataToken', res.data)
+      // 在 vuex 的 user 里是不需要 user/
+      // 将 token 交给 mutation 存入 state 
+      context.commit('updataToken', res.data)
+      // } catch (event) {
+      //   Vue.prototype.$message.error(event.message)
+      // }
+    }
+  }
 }
 
 // import { login, logout, getInfo } from '@/api/user'
