@@ -3,6 +3,8 @@
 import axios from 'axios'
 // 引入 store
 import store from '@/store'
+import router from '@/router'
+import Vue from 'vue'
 // 创建一个axios的实例，配置
 const service = axios.create({
   // 当没有设置服务器地址时，请求的就是当前服务器
@@ -58,7 +60,33 @@ service.interceptors.response.use(function(response) {
     return Promise.reject(new Error(response.data.message))
   }
 }, function(error) {
+  // 2.对 token 失效进行处理
   // console.log('响应错误拦截到了:', error)
+  // 2-1. 想要看具体点的 dir
+  // console.dir(error)
+  // 2-2. 通过打知, 1002 token 就过期了（模拟，修改 token 值就行）
+  if (error.response.data.code === 10002) {
+    // 2-3.token 失效, 则清空 token 和 userInfo
+    store.dispatch('user/logout')
+    // 3. 最后提示一下吧
+    Vue.prototype.$message.error('用户信息出错,请重新登录')
+
+    // 2-4. 跳转到登录页面, 当前在什么页面,登录后还得跳回来
+    // 这时就用到 路由传参的知识点了（在加编程式导航更好）
+    // 最后，导入 router,因为这是 js，再看看 导出是不是 router
+    console.log('req1:', router)
+    console.log('req2:', router.currentRoute.fullPath)
+    // router.currentRoute:获取当前的路由信息，完全等同于 $route
+    // currentRoute 跳回登录页之前，把当前消息带回登录页
+    router.push({
+      path: '/login',
+      query: {
+        return_url: router.currentRoute.fullPath // 路由会帮我们转码,无需手动处理
+      }
+    })
+    // router.push('/login?return_url=' + encodeURIComponent(router.currentRoute.fullPath))
+  }
+
   // 对响应错误做点什么
   return Promise.reject(error)
 })

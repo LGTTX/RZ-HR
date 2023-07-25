@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <!-- <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
@@ -8,6 +8,14 @@
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
+      </router-link>
+    </transition>
+  </div> -->
+  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+    <transition name="sidebarLogoFade">
+      <!-- router-link 在 html 中就是 a , to 就是 href-->
+      <router-link key="collapse" class="sidebar-logo-link" to="/">
+        <img src="@/assets/common/logo.png" class="sidebar-logo  ">
       </router-link>
     </transition>
   </div>
@@ -46,7 +54,8 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
-  background: #2b2f3a;
+  // delete
+  // background: #2b2f3a;
   text-align: center;
   overflow: hidden;
 
@@ -54,9 +63,12 @@ export default {
     height: 100%;
     width: 100%;
 
+    // 没有 collapse 时为大图的样式
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      // width: 32px;
+      // height: 32px;
+      width: 140px;
+
       vertical-align: middle;
       margin-right: 12px;
     }
@@ -73,9 +85,14 @@ export default {
     }
   }
 
+  // 有 collapse 时为小图的样式
   &.collapse {
+    // sidebar-logo 小图片的 class
     .sidebar-logo {
       margin-right: 0px;
+      // add
+      width: 32px;
+      height: 32px;
     }
   }
 }

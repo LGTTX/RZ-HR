@@ -7,8 +7,14 @@
     position: relative;
   }
 
+  // 在 layout index.vue 组件中
   .sidebar-container {
+    // add
+    background: -webkit-linear-gradient(bottom, #3d6df8, #5b8cff);
+    // add 阴影
+    box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
     transition: width 0.28s;
+    // add alter (variables.scss)
     width: $sideBarWidth !important;
     background-color: $menuBg;
     height: 100%;
@@ -27,6 +33,9 @@
 
     .scrollbar-wrapper {
       overflow-x: hidden !important;
+      // add
+      // /在样式中使用 @ 符号需要在前面加 ~ 号
+      background: url('~@/assets/common/leftnavBg.png') no-repeat 0 100%;
     }
 
     .el-scrollbar__bar.is-vertical {
@@ -62,11 +71,35 @@
       margin-left: -2px;
     }
 
+    // add
     .el-menu {
       border: none;
       height: 100%;
       width: 100% !important;
-    }
+      a{
+        li{
+          .svg-icon{
+            color: #fff;
+            font-size: 18px;
+            vertical-align: middle;
+            .icon{
+              color:#fff;
+            }
+          }
+          span{
+            color: #fff;
+          }
+          &:hover{
+            .svg-icon{
+              color: #43a7fe
+            }
+            span{
+              color: #43a7fe;
+            }
+          }
+        }
+      }
+     }
 
     // menu hover
     .submenu-title-noDropdown,

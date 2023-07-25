@@ -17,8 +17,8 @@ import store from './store'
 import router from './router'
 
 import '@/icons' // icon
-// 权限控制, 没有接收的，说明只是执行一下就可以了，不需要从里面拿东西，向引入css那样
-// import '@/permission' // permission control
+// 权限控制, 只执行模块内的代码，不需要引入其中的成员，向引入css那样
+import '@/permission' // permission control
 
 /**
  * If you don't want to use mock-server

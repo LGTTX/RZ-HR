@@ -69,7 +69,7 @@
 
       <!-- 即先点击 登录 token 存入 vuex, 再次点击测试-->
       <!-- 测试 获取到 token 没 -->
-      <el-button @click="getUserProfile">获取用户信息</el-button>
+      <!-- <el-button @click="getUserProfile">获取用户信息</el-button> -->
 
       <div class="tips">
         <span style="margin-right:20px;">账号: 13800000002</span>
@@ -86,7 +86,7 @@
 import { validMobile } from '@/utils/validate'
 
 // 封装到 store 的 user 中了，此处只需调用即可
-import { getProfile } from '@/api/user'
+// import { getProfile } from '@/api/user'
 
 // import { login } from '@/api/user'
 
@@ -146,11 +146,11 @@ export default {
       })
     },
     // 测试 token 添加成功没
-    async getUserProfile() {
-      console.log('获取用户信息')
-      const res = await getProfile()
-      console.log(res)
-    },
+    // async getUserProfile() {
+    //   console.log('获取用户信息')
+    //   const res = await getProfile()
+    //   console.log(res)
+    // },
     // 兜底校验
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
@@ -199,7 +199,43 @@ export default {
 
           // 1. 如果需要捕获到异常，要在 dispatch 前加 await 等待请求完成
           try {
+            // 一定要记得加await否则会出现登录失败但依然跳转到首页的意外情况
+            // 原因就是 不加 await，它就根本不等你返回结果，就直接执行 跳转首页了
             await this.$store.dispatch('user/postLogin', this.loginForm)
+            
+            // 2-1.后端的提示不好，前端自己写,放到 store 的 dispatch 里
+            
+            // 2.登录成功之后 跳转首页
+            // this.$router.push('/')
+
+            // 3.不是直接跳到首页，而是跳转至指定的页面
+            // 获取传递过来的 return_url
+            // 路由传参:
+            // path + query
+            // name + params
+            // 注意，打印前注释掉以前的跳转
+            // console.log(this.$route.query) 
+            console.log(this.$route) 
+            // {return_url: '/form/index'}--》return_url: "/form/index"
+            // 3-1. 到这一步,可以手动输入 return_url 就会自动跳转到输入指定的页面了
+            // 3-2. query(查询参数) ： 代表当前地址的 search 属性的对象--》query(查询参数，一个对象),代表当前搜素地址的路径
+            this.$router.push(this.$route.query.return_url || '/')
+            
+            // 
+            // this.$router.push(this.$route.fullPath || '/')
+            // console.log('index:', this.$route)
+
+            // this.$route.push({
+            //   path: `${this.$route.query.return_url || '/'}`,
+            //   query: {
+            //     return_url: this.$route.fullPath
+            //   }
+
+            // })
+            
+            //  3-3. 注意,此处的 return_url 是自定义的,但要保证 点击退出保存那里也跟这里的一样
+
+            // 3-4.在点击退出后，会传
           } catch (event) {
             this.$message.error(event.message)
           }
