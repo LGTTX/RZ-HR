@@ -1,13 +1,29 @@
 <template>
+  <!-- 如果 路由组件里没有设置 hidden 那么就渲染 -->
+  <!-- SidebarItem 就是从 index.vue 分离出来的模块
+       所以 item 就是 index 里面的
+  -->
   <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+    <template
+      v-if="hasOneShowingChild(item.children,item) && 
+        (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow"
+    >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+        
+        <!--  el-menu-item 菜单项 -->
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+          
+          <!-- 由 vue 打印台的 组件那里立场看知，item组件渲染出两个东西 SvgIcon 与 MenuItem 两个组件-->
+
+          <!-- onlyOneChild : 就是由我们写的 路由可知，只有一个孩子 -->
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+        
         </el-menu-item>
+      
       </app-link>
     </template>
 
+    <!-- 有子菜单的菜单项，而我们项目没有，所以只会进 if 里面 -->
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
@@ -22,7 +38,7 @@
       />
     </el-submenu>
   </div>
-</template>
+</template> 
 
 <script>
 import path from 'path'

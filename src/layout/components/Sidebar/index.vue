@@ -12,7 +12,19 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+        <!-- 1. 
+          route =》 this.$router.options.routes -->
+        <!-- route 就是每一项 routes 数组中的数据，里面有 path 属性-->
+        <!-- item 就是 route  -->
+        <!-- 在 route 里面有的路由还绑定 hidden, 所以就是通过 判断是否有 
+          hidden 来渲染的组件到 SidebarItem 的  -->
+        <!-- 2. item 就是循环组件 -->
+        <sidebar-item
+          v-for="route in routes" 
+          :key="route.path"
+          :item="route"
+          :base-path="route.path"
+        />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -31,6 +43,10 @@ export default {
       'sidebar'
     ]),
     routes() {
+      // console.log(this.$router)
+      // console.log(this.$router.options.routes)
+
+      // 1.router.options.routes:路由规则数组,路由表
       return this.$router.options.routes
     },
     activeMenu() {

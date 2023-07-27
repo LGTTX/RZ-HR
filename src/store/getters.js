@@ -9,6 +9,7 @@ const getters = {
   // 当组件内访间全局的getters => username 时，
   // 就等于访问了user子模块中userInfo.username
   username: state => state.user.userInfo.username,
-  staffPhoto: state => state.user.userInfo.stafPhoto
+  staffPhoto: state => state.user.userInfo.stafPhoto,
+  userId: state => state.user.userInfo.userId
 }
 export default getters

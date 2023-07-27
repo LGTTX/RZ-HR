@@ -9,11 +9,15 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
+import getPageTitle from './utils/get-page-title'
 
 // 定义白名单
 const whiteList = ['/login', '/404']
 
 router.beforeEach(async(to, from, next) => {
+  // 
+  // console.log(to.path, from.path)
+
   // 3-1.进度条开始
   NProgress.start()
   // token 存在 vuex 中, 所以需要导入 store, 取 token,
@@ -40,8 +44,16 @@ router.beforeEach(async(to, from, next) => {
 
     // 对于为什么 在这样一个块里面，如果此处的异步获取不到消息它就会一直卡在这里，
     // ---》因为在 async/await 里面，在这里面的都是 异步任务
-    await store.dispatch('user/postProfile')
 
+    // 6. 加一个判断，如果有 userId 了, 就不需要发请求了，如果没有 userId 才发请求
+    // 6-1. 获取 userId
+    // const userId = store.state.user.userInfo.userId
+    // 在 gettre 定义后, 来拿
+    // 6-2. 如果没有 userId 才发请求 , 因为有 userId 则已经是存在 userProfile 了
+    const userId = store.getters.userId
+    if (!userId) {
+      await store.dispatch('user/postProfile')
+    }
     if (to.path === '/login') { // 去登录页
       // 4.如果已经登录了，从首页访问登录页，则不会进行路由跳转，从首页到首页不算路由跳转
       // 会导致后置守卫不触发的情况
@@ -71,7 +83,20 @@ router.beforeEach(async(to, from, next) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to, from) => {
+  // 7. 打印一下 to, from
+  /* 
+    // $router 做编程式导航跳转的
+    // to from 这些都是 $route 路由信息对象
+
+    在 Vue 实例中，你可以通过 $router 访问路由实例。因此你可以调用 this.$router.push。
+  */
+  // 7-1. 打印之后 在 to 信息对象里面有 meta 属性，这就好办了，直接拿
+  // console.log(to, from)
+  // 7-2. 直接 通过 to 拿 meta
+  // document.title = `人资系统 - ${to.meta.title}`
+  document.title = getPageTitle(to.meta.title)
+
   // 3-2.进度条结束
   NProgress.done()
 })

@@ -4,7 +4,7 @@ import axios from 'axios'
 // 引入 store
 import store from '@/store'
 import router from '@/router'
-import Vue from 'vue'
+// import Vue from 'vue'
 // 创建一个axios的实例，配置
 const service = axios.create({
   // 当没有设置服务器地址时，请求的就是当前服务器
@@ -69,19 +69,25 @@ service.interceptors.response.use(function(response) {
     // 2-3.token 失效, 则清空 token 和 userInfo
     store.dispatch('user/logout')
     // 3. 最后提示一下吧
-    Vue.prototype.$message.error('用户信息出错,请重新登录')
+    // Vue.prototype.$message.error('用户信息出错,请重新登录')
+
+    // console.log(location)
+    // console.log(location.hash)
 
     // 2-4. 跳转到登录页面, 当前在什么页面,登录后还得跳回来
     // 这时就用到 路由传参的知识点了（在加编程式导航更好）
     // 最后，导入 router,因为这是 js，再看看 导出是不是 router
-    console.log('req1:', router)
-    console.log('req2:', router.currentRoute.fullPath)
+    // console.log('req1:', router)
+    // console.log('req2:', router.currentRoute.fullPath)   //  '/'
     // router.currentRoute:获取当前的路由信息，完全等同于 $route
     // currentRoute 跳回登录页之前，把当前消息带回登录页
     router.push({
       path: '/login',
       query: {
-        return_url: router.currentRoute.fullPath // 路由会帮我们转码,无需手动处理
+        // 利用 BOM 的 API, 直接获取地址栏的hash即可
+        // 再利用 substring 去掉 #
+        // return_url: router.currentRoute.fullPath // 路由会帮我们转码,无需手动处理
+        return_url: location.hash.substring(1)
       }
     })
     // router.push('/login?return_url=' + encodeURIComponent(router.currentRoute.fullPath))
