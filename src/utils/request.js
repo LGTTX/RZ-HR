@@ -64,7 +64,7 @@ service.interceptors.response.use(function(response) {
   // console.log('响应错误拦截到了:', error)
   // 2-1. 想要看具体点的 dir
   // console.dir(error)
-  // 2-2. 通过打知, 1002 token 就过期了（模拟，修改 token 值就行）
+  // 2-2. 通过打印, 1002 token 就过期了（模拟，修改 token 值就行）
   if (error.response.data.code === 10002) {
     // 2-3.token 失效, 则清空 token 和 userInfo
     store.dispatch('user/logout')

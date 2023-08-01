@@ -76,6 +76,9 @@
       border: none;
       height: 100%;
       width: 100% !important;
+      
+      // 这个是 el-menu 的一个特殊的类.is-active
+      // 找不到这个类，但它就是存在
       a{
         li{
           .svg-icon{
@@ -90,23 +93,37 @@
             color: #fff;
           }
           &:hover{
+            color: #d02121;
             .svg-icon{
               color: #43a7fe
+              // color: #7a7d80
             }
             span{
               color: #43a7fe;
+              // color: #6c6e70;
             }
           }
         }
       }
-     }
+    }
 
-    // menu hover
+     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
       &:hover {
         background-color: $menuHover !important;
       }
+    }
+
+    // 导航高亮
+    .is-active {
+      background-color: $menuText !important;
+      span, svg{
+        color: $menuActiveText !important;
+      }
+      // .svg-icon{
+      //   color: $menuActiveText !important;
+      // }
     }
 
     .is-active>.el-submenu__title {

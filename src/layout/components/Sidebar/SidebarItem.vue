@@ -8,6 +8,8 @@
       v-if="hasOneShowingChild(item.children,item) && 
         (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow"
     >
+      <!-- 在我们之前的 ME 中式使用 router 属性（在 el-menu）设置）以 index 作为 path 进行跳转-->
+      <!-- 但此处包裹了一个 app-link 组件 来实现跳转 -->
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         
         <!--  el-menu-item 菜单项 -->
@@ -44,7 +46,7 @@
 import path from 'path'
 import { isExternal } from '@/utils/validate'
 import Item from './Item'
-import AppLink from './Link'
+import AppLink from './Link' 
 import FixiOSBug from './FixiOSBug'
 
 export default {

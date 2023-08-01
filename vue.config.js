@@ -44,7 +44,7 @@ module.exports = {
         target: 'http://localhost:3000' // 目标服务器地址。我们要代理的真实接口地址
         // target: 'http://ihrm.itheima.net'
       }
-    }
+    } 
     // 在项目中开启 mock-serve 实现 数据模拟
     // before: require('./mock/mock-server.js')
   },

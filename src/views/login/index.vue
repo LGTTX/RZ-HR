@@ -215,7 +215,7 @@ export default {
             // name + params
             // 注意，打印前注释掉以前的跳转
             // console.log(this.$route.query) 
-            console.log(this.$route) 
+            // console.log(this.$route) 
             // {return_url: '/form/index'}--》return_url: "/form/index"
             // 3-1. 到这一步,可以手动输入 return_url 就会自动跳转到输入指定的页面了
             // 3-2. query(查询参数) ： 代表当前地址的 search 属性的对象--》query(查询参数，一个对象),代表当前搜素地址的路径

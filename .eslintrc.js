@@ -195,8 +195,11 @@ module.exports = {
       objectsInObjects: false
     }],
     'array-bracket-spacing': [2, 'never'],
+    // add
     "no-trailing-spaces": 0,
     "no-empty": 0,
     // "vue/no-unused-vars": "off"
+    // "vue/html-closing-bracket-newline": "off"
+    "no-unused-vars": 0
   }
 }
