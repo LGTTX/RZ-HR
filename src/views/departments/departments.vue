@@ -120,6 +120,7 @@
     </div>
 
     <!-- 2. -->
+    <!-- 2-1. dialogTitle 只能在 计算属性内判断，不然出错 -->
     <el-dialog
       :title="dialogTitle"
       :visible.sync="showDialog"

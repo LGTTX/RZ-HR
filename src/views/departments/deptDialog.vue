@@ -18,7 +18,7 @@
                --》即在 el-option 中，看 el-select 的 v-module 绑定什么就传什么
               --》注意:
                ---》在 el-option 中的 value 的值，最终会传给 el-select 的 value 的值
-
+ 
                最后，如果是变量的    一定定的必须加 :
             -->
           <el-option v-for="item in employees" :key="item.id" :value="item.username" :label="item.username" />
@@ -187,6 +187,8 @@ export default {
           if (this.isEdit) {
             // 因为 编辑信息我们 不传其它的也行了，传这些个 this.form 够了
             // 只要不影响后面的开发即可
+
+            // 2-1.这时 this.form 已经变了，因为 数据回填的时候 this.form 已经被替换了
             res = await updataDepartment(this.form)
           } else {
             //

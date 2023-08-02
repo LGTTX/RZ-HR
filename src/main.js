@@ -20,6 +20,15 @@ import '@/icons' // icon
 // 权限控制, 只执行模块内的代码，不需要引入其中的成员，向引入css那样
 import '@/permission' // permission control
 
+// 下面使用 use 了
+// 导入组件
+// import PageTools from '@/components/PageTools'
+
+// 全局注册
+// Vue.component('PageTools', PageTools)
+// 这样更高雅一些,之后只需修改 name 即可
+// Vue.component(PageTools.name, PageTools)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -32,6 +41,11 @@ import '@/permission' // permission control
 //   const { mockXHR } = require('../mock')
 //   mockXHR()
 // }
+
+// 把整个 公共组件 给注册进来
+import Components from '@/components'
+// 因为在 src/componets/index.js 中我们已经 封装好了，这里我们只需要 use 一下即可
+Vue.use(Components)
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
